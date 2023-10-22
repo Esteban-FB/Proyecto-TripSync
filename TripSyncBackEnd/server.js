@@ -1,7 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
- 
+const cors = require('cors');
+app.use(cors());
 app.use(morgan('dev'))
 app.use(express.json())
 
@@ -9,9 +10,9 @@ app.use(express.json())
 const archivoDB = require('./conexion')
 
 //impotar arvhivo de rutas y modelos
-const rutaLocal = require('./routes/ejemploRoutes')
+const rutaLocal = require('./routes/ejemplos')
 
-app.use('/api/local',rutaLocal)
+app.use('/api/ejemplos',rutaLocal)
 
 
 app.get('/',(req,res)=>{

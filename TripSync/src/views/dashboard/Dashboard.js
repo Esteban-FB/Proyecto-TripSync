@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import ActivitiesTab from '../activitiesTab/ActivitiesTab'; // Importa tus componentes de pestañas aquí
 import MapTab from '../map/MapTab';
+import TestTab from '../map/TestTab';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,7 +12,7 @@ const Dashboard = () => {
     
       <Tab.Navigator
         initialRouteName="TabScreen1"
-        tabBarOptions={{
+        screenOptions={{
           activeTintColor: 'blue', // Color de la pestaña activa
           inactiveTintColor: 'gray', // Color de la pestaña inactiva
         }}
@@ -29,7 +30,7 @@ const Dashboard = () => {
         />
         <Tab.Screen
           name="TabScreen2"
-          component={MapTab}
+          component={TestTab}
           options={{
             tabBarLabel: 'Pestaña 2',
           }}
