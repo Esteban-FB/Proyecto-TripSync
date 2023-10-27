@@ -1,6 +1,7 @@
 //import * as React from 'react';
 import React, { useState } from 'react';
-import { View, Text, TextInput, Picker, Switch, Button, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, Switch, Button, Image, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 const RegistrarSitio = () => {
   const [nombreSitio, setNombreSitio] = useState('');

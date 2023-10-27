@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, ImageBackground } from 'react-native';
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Aquí puedes realizar la lógica de autenticación, por ejemplo, verificar las credenciales en una base de datos.
-
-    // Si las credenciales son correctas, navega al componente Dashboard
+    // Lógica de autenticación aquí
     navigation.navigate('Dashboard');
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../assets/background-image.jpg')} style={styles.container}>
+      <Text style={styles.title}>Bienvenido a TripSync</Text>
       <TextInput
         style={styles.input}
         placeholder="Nombre de Usuario"
@@ -28,7 +27,7 @@ const Login = ({ navigation }) => {
         onChangeText={setPassword}
       />
       <Button title="Iniciar Sesión" onPress={handleLogin} />
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -38,11 +37,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  title: {
+    fontSize: 24,
+    color: 'white',
+    marginBottom: 20,
+  },
   input: {
     width: '80%',
     marginVertical: 10,
     padding: 10,
-    borderWidth: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 5,
   },
 });

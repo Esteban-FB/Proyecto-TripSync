@@ -20,19 +20,11 @@ const Dashboard = () => {
         inactiveTintColor: 'gray', // Color de la pestaña inactiva
       }}
     >
-      <Tab.Screen
-        name="Actividades"
-        component={ActivitiesTab}
-        options={{
-          tabBarLabel: 'Actividades', // Texto de la pestaña
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="list" color={color} size={size} />
-          ),
-        }}
-      />
+
       <Tab.Screen
         name="Mapa"
-        component={TestTab}
+        component={MapTab}
+        color = "darkblue"
         options={{
           tabBarLabel: 'Mapa',
           tabBarIcon: ({ color, size }) => (
@@ -51,10 +43,13 @@ const Dashboard = () => {
         }}
       />
       <Tab.Screen
-          name="Mis Sitios"
+          name="Sitios"
           component={AgregarSitio}
           options={{
-            tabBarLabel: 'Mis Sitios',
+            tabBarLabel: 'Sitios',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="list" color={color} size={size} />
+            ),
           }}
         />
       {/* Puedes agregar más pestañas aquí según tus necesidades */}
