@@ -6,7 +6,7 @@ import MapTab from '../map/MapTab';
 import TestTab from '../map/TestTab';
 import Agenda from '../agenda/MiAgenda'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import AgregarSitio from '../sitios/AgregarSitio';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,6 +50,13 @@ const Dashboard = () => {
           ),
         }}
       />
+      <Tab.Screen
+          name="Mis Sitios"
+          component={AgregarSitio}
+          options={{
+            tabBarLabel: 'Mis Sitios',
+          }}
+        />
       {/* Puedes agregar más pestañas aquí según tus necesidades */}
     </Tab.Navigator>
 
