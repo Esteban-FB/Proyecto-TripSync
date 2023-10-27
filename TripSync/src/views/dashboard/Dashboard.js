@@ -4,7 +4,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import ActivitiesTab from '../activitiesTab/ActivitiesTab'; // Importa tus componentes de pestañas aquí
 import MapTab from '../map/MapTab';
 import TestTab from '../map/TestTab';
-import AgregarSitio from '../map/AgregarSitio';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,13 +33,6 @@ const Dashboard = () => {
           component={TestTab}
           options={{
             tabBarLabel: 'Pestaña 2',
-          }}
-        />
-        <Tab.Screen
-          name="Mis Sitios"
-          component={AgregarSitio}
-          options={{
-            tabBarLabel: 'Mis Sitios',
           }}
         />
         {/* Puedes agregar más pestañas aquí según tus necesidades */}

@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/logIn/LogIn';
 import Dashboard from './src/views/dashboard/Dashboard';
-import RegistrarSitio from './src/views/map/RegistrarSitio'; 
 
 const Stack = createStackNavigator();
 
@@ -13,7 +12,6 @@ const App = () => {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="RegistrarSitio" component={RegistrarSitio} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
