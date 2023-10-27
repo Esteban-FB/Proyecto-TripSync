@@ -30,5 +30,5 @@
     "@babel/core": "^7.20.0"
   },
   "private": true,
-  "proxy": "http://localhost:5000"
+  "proxy": "http://10.0.2.2:5000"
 }

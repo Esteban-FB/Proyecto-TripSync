@@ -11,15 +11,17 @@ const archivoDB = require('./conexion')
 
 //impotar arvhivo de rutas y modelos
 const rutaLocal = require('./routes/ejemplos')
+const rutaAgenda = require('./routes/Agenda')
 
-app.use('/api/ejemplos',rutaLocal)
+app.use('/api/ejemplos', rutaLocal)
+app.use('/api/agenda', rutaAgenda)
 
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.end('Bienvenido al servidor backend node.js corriendo...')
 })
 
 //Configurar server básico
-app.listen(5000,function(){
+app.listen(5000, function () {
     console.log('El servidor está corriendo en el puerto 5000')
 })

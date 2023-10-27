@@ -8,6 +8,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
+import axios from 'axios'; // Asegúrate de instalar axios: npm install axios
 
 // Componente interno optimizado con React.memo
 const EventItem = React.memo(({ event, onPress }) => {
@@ -35,7 +36,7 @@ const MiAgenda = React.memo(() => {
         setModalVisible(!isModalVisible);
     };
 
-    const addEvent = () => {
+    const addEvent = async () => {
         if (!selectedDay) {
             alert('Por favor, selecciona un día en el calendario.');
             return;
@@ -48,6 +49,7 @@ const MiAgenda = React.memo(() => {
 
         const newEvent = { text: newEventText, details: newEventDetails };
 
+        // Actualizar el estado local
         setItems((prevState) => {
             const updatedItems = { ...prevState };
 
@@ -65,6 +67,21 @@ const MiAgenda = React.memo(() => {
         setNewEventDetails('');
         setSelectedDay(null);
         toggleModal();
+
+        try {
+            // Enviar el evento al servidor usando Axios
+            await axios.post('http://10.0.2.2:5000/api/agenda/agregar-evento', {
+                date: selectedDay,
+                text: newEventText,
+                details: newEventDetails,
+            });
+
+            // Manejar la respuesta del servidor si es necesario
+        } catch (error) {
+            console.log(error)
+            console.error('Error al enviar el evento al servidor:', error.message);
+            // Puedes manejar el error según tus necesidades
+        }
     };
 
     const renderEvent = useCallback(
