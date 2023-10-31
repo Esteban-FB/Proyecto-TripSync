@@ -2,8 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/logIn/LogIn';
-import Dashboard from './src/views/dashboard/Dashboard';
-import RegistrarSitio from './src/views/sitios/RegistrarSitio'; 
+import Dashboard from './src/components/dashboard/Dashboard';
+import RegistrarSitio from './src/components/sitios/RegistrarSitio'; 
 
 const Stack = createStackNavigator();
 

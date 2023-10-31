@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, Button } from 'react-native';
-import RegistrarSitio from '../sitios/RegistrarSitio';
+import RegistrarSitio from './RegistrarSitio';
 import { useNavigation } from '@react-navigation/native';
 
 const AgregarSitio = () => {

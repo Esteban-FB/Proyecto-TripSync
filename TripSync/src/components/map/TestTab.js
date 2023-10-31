@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import MapView from 'react-native-maps';
 import axios from 'axios';
 
 const MiComponente = () => {
@@ -40,7 +41,8 @@ const MiComponente = () => {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View>
-            <Text>{item.campo}</Text>
+            {/* <Text>{item.campo}</Text> */}
+            <MapView></MapView>
           </View>
         )}
       />
