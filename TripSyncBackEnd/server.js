@@ -12,9 +12,13 @@ const archivoDB = require('./conexion')
 //impotar arvhivo de rutas y modelos
 const rutaLocal = require('./routes/ejemplos')
 const rutaAgenda = require('./routes/Agenda')
+const rutaLocales = require('./routes/Local')
+const rutaLogIn = require('./routes/LogIn')
 
 app.use('/api/ejemplos', rutaLocal)
 app.use('/api/agenda', rutaAgenda)
+app.use('/api/locales',rutaLocales)
+app.use('/api/login',rutaLogIn)
 
 
 app.get('/', (req, res) => {

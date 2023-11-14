@@ -1,9 +1,11 @@
 //import * as React from 'react';
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Button, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, Switch, Button, Image, ScrollView, Modal, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+//import DateTimePicker from '@react-native-community/datetimepicker';
 
-const RegistrarSitio = () => {
+
+const RegistrarSitio = ({ visible, onClose, modoEdicion = false }) => {
   const [nombreSitio, setNombreSitio] = useState('');
   const [tipoSitio, setTipoSitio] = useState('Hospedaje');
   const [breveDescripcion, setBreveDescripcion] = useState('');
@@ -13,19 +15,67 @@ const RegistrarSitio = () => {
   const [horario, setHorario] = useState('');
   const [contactoTelefono, setContactoTelefono] = useState('');
   const [contactoCorreo, setContactoCorreo] = useState('');
+  const [actividades, setActividades] = useState([]); // Vector para almacenar actividades
+  const [nuevaActividad, setNuevaActividad] = useState({
+    nombre: '',
+    fecha: '',
+  });
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const handleAgregarActividad = () => {
+    // Agrega la nueva actividad al vector de actividades
+    setActividades([...actividades, nuevaActividad]);
+    // Limpia el formulario de nueva actividad
+    setNuevaActividad({
+      nombre: '',
+      fecha: '',
+    });
+  };
 
   const handleRegistro = () => {
-    // Aquí puedes agregar la lógica para enviar los datos a tu servidor o almacenarlos localmente
+    // Lógica para enviar o almacenar los datos, incluyendo actividades
+    const sitio = {
+      nombreSitio,
+      tipoSitio,
+      breveDescripcion,
+      descripcionExtensa,
+      ubicacion,
+      requiereReserva,
+      horario,
+      contactoTelefono,
+      contactoCorreo,
+      actividades,
+    };
+    // ... Hacer algo con el objeto "sitio"
+    // ...
+
+    // Cerrar el modal después de registrar
+    onClose();
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setSelectedDate(selectedDate);
+      // Puedes guardar la fecha en tu estado de actividad o hacer lo necesario con ella aquí
+    }
   };
 
   return (
-    <ScrollView style={{ padding: 20 }}>
-      <Text>Nombre del sitio:</Text>
-      <TextInput
-        placeholder="Ejemplo: Hotel Paradise"
-        value={nombreSitio}
-        onChangeText={text => setNombreSitio(text)}
-      />
+<Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <ScrollView style={{ padding: 20, backgroundColor: 'white', flex: 1 }}>
+        <Text>Nombre del sitio:</Text>
+        <TextInput
+          placeholder="Ejemplo: Hotel Paradise"
+          value={nombreSitio}
+          onChangeText={text => setNombreSitio(text)}
+        />
 
       <Text>Tipo de sitio:</Text>
       <Picker
@@ -69,7 +119,35 @@ const RegistrarSitio = () => {
         value={requiereReserva}
         onValueChange={value => setRequiereReserva(value)}
       />
+      {/*Actividades*/}
+      <Text>Actividades:</Text>
+        {actividades.map((actividad, index) => (
+          <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text>{actividad.nombre}</Text>
+            <Text>{actividad.fecha}</Text>
+          </View>
+        ))}
+        
+        <Text>Nueva Actividad:</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TextInput
+            placeholder="Nombre de la actividad"
+            value={nuevaActividad.nombre}
+            onChangeText={text => setNuevaActividad({ ...nuevaActividad, nombre: text })}
+          />
+                  <Button title="Seleccionar Fecha" onPress={() => setShowDatePicker(true)} />
+        {showDatePicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="datetime"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+        </View>
 
+        <Button title="Agregar Actividad" onPress={handleAgregarActividad} />
       {/* Agregar opción para adjuntar fotos o videos según tus necesidades */}
 
       <Text>Horario:</Text>
@@ -93,8 +171,11 @@ const RegistrarSitio = () => {
         onChangeText={text => setContactoCorreo(text)}
       />
 
-      <Button title="Registrar" onPress={handleRegistro} />
-    </ScrollView>
+      </ScrollView>
+
+      <Button title={modoEdicion ? 'Actualizar' : 'Registrar'} onPress={handleRegistro} />
+      <Button title="Cerrar" onPress={onClose} />
+      </Modal>
   );
 };
 
