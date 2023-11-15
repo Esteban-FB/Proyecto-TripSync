@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Switch, Button, Image, ScrollView, Modal, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 const RegistrarSitio = ({ visible, onClose, modoEdicion = false }) => {
@@ -23,14 +23,18 @@ const RegistrarSitio = ({ visible, onClose, modoEdicion = false }) => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
   const handleAgregarActividad = () => {
     // Agrega la nueva actividad al vector de actividades
-    setActividades([...actividades, nuevaActividad]);
-    // Limpia el formulario de nueva actividad
-    setNuevaActividad({
-      nombre: '',
-      fecha: '',
-    });
+    const actividad = { ...nuevaActividad };
+    setActividades([...actividades, actividad]);
+    setNuevaActividad({ nombre: '', fecha: '' });
+  };
+
+  const handleDeleteActividad = (index) => {
+    const updatedActividades = [...actividades];
+    updatedActividades.splice(index, 1);
+    setActividades(updatedActividades);
   };
 
   const handleRegistro = () => {
@@ -56,9 +60,9 @@ const RegistrarSitio = ({ visible, onClose, modoEdicion = false }) => {
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
-    if (selectedDate) {
+    if (selectedDate instanceof Date) {
       setSelectedDate(selectedDate);
-      // Puedes guardar la fecha en tu estado de actividad o hacer lo necesario con ella aquí
+      setNuevaActividad({ ...nuevaActividad, fecha: selectedDate.toString() });
     }
   };
 
@@ -119,35 +123,36 @@ const RegistrarSitio = ({ visible, onClose, modoEdicion = false }) => {
         value={requiereReserva}
         onValueChange={value => setRequiereReserva(value)}
       />
+
       {/*Actividades*/}
+      {/* Mostrar actividades agregadas */}
       <Text>Actividades:</Text>
         {actividades.map((actividad, index) => (
-          <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text>{actividad.nombre}</Text>
-            <Text>{actividad.fecha}</Text>
+          <View key={index}>
+            <Text>{actividad.nombre} - {actividad.fecha}</Text>
+            <Button title="Eliminar" onPress={() => handleDeleteActividad(index)} />
           </View>
         ))}
-        
+
         <Text>Nueva Actividad:</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <TextInput
-            placeholder="Nombre de la actividad"
-            value={nuevaActividad.nombre}
-            onChangeText={text => setNuevaActividad({ ...nuevaActividad, nombre: text })}
-          />
-                  <Button title="Seleccionar Fecha" onPress={() => setShowDatePicker(true)} />
+        <TextInput
+          placeholder="Nombre de la actividad"
+          value={nuevaActividad.nombre}
+          onChangeText={text => setNuevaActividad({ ...nuevaActividad, nombre: text })}
+        />
+
+        <Button title="Agregar Actividad" onPress={handleAgregarActividad} />
+
+        {/* DatePicker para la fecha de la nueva actividad */}
+        <Button title="Seleccionar Fecha" onPress={() => setShowDatePicker(true)} />
         {showDatePicker && (
           <DateTimePicker
             value={selectedDate}
-            mode="datetime"
-            is24Hour={true}
+            mode="date"
             display="default"
             onChange={handleDateChange}
           />
         )}
-        </View>
-
-        <Button title="Agregar Actividad" onPress={handleAgregarActividad} />
       {/* Agregar opción para adjuntar fotos o videos según tus necesidades */}
 
       <Text>Horario:</Text>
