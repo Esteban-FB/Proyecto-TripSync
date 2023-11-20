@@ -22,9 +22,9 @@ const EventItem = React.memo(({ event, onPress }) => {
 
 const MiAgenda = React.memo(() => {
     const [items, setItems] = useState({
-        '2023-10-25': [{ text: 'Evento 1', details: 'Detalles del Evento 1' }],
-        '2023-10-26': [{ text: 'Evento 2', details: 'Detalles del Evento 2' }],
-        '2023-10-27': [],
+        '2023-11-29': [{ text: 'Evento 1', details: 'Detalles del Evento 1' }],
+        '2023-11-20': [{ text: 'Evento 2', details: 'Detalles del Evento 2' }],
+        '2023-11-19': [],
     });
 
     const [isModalVisible, setModalVisible] = useState(false);
