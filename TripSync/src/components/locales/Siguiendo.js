@@ -15,10 +15,9 @@ const LocalList = () => {
   const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [nombreLocal, setNombreLocal]=useState('');
 
-
   useEffect(() => {
     if (user) {
-      axios.get(`http://10.0.2.2:5000/api/locales/getLocalesNoCoinciden/${user.user}`)
+      axios.get(`http://10.0.2.2:5000/api/locales/getLocalesCoinciden/${user.user}`)
         .then(response => {
           setLocales(response.data);
         })
@@ -28,29 +27,16 @@ const LocalList = () => {
     }
   }, [user]);
 
-  const seguirLocal = (localId) => {
-    // Encontrar el local por su _id y guardarlo en una variable
-    const localSeguido = locales.find(local => local._id === localId);
-
-    // Crear el objeto con los datos del usuario y el nuevo seguimiento
-    const seguimiento = {
-      rating: 0, // Puedes establecer un valor por defecto o pedir al usuario que lo ingrese
-      comentario: '', // Aquí podrías pedir al usuario que ingrese un comentario si deseas
-      usuario: user.user, // Usar la información del usuario actual obtenida del contexto
-    };
-
-    // Enviar la información del seguimiento al backend para agregarla al array de usuarios del local
-    axios.post(`http://10.0.2.2:5000/api/locales/seguirLocal/${localId}`, seguimiento)
-    .then(response => {
-      // Si la operación fue exitosa, filtramos los locales para obtener todos menos el que se está siguiendo
-      const nuevosLocales = locales.filter(local => local._id !== localId);
-      setLocales(nuevosLocales); // Actualizar la lista de locales en el estado
-    })
-    .catch(error => {
-      console.error('Error al seguir el local', error);
-    });
+  const dejarDeSeguirLocal = (localId) => {
+    axios.post(`http://10.0.2.2:5000/api/locales/dejarDeSeguirLocal/${localId}`, { usuario: user.user })
+      .then(response => {
+        const nuevosLocales = locales.filter(local => local._id !== localId);
+        setLocales(nuevosLocales);
+      })
+      .catch(error => {
+        console.error('Error al dejar de seguir el local', error);
+      });
   };
-
 
   const handleAgregarActividadEnOtroLugar = async (actividad, localNombre) => {
     const selectedDay = actividad.fecha; // Obtener la fecha de la actividad
@@ -95,7 +81,7 @@ const LocalList = () => {
         <Button title="Cerrar" onPress={() => setModalActividadesVisible(false)} />
       </View>
     );
-  };
+  };  
 
   const renderItem = ({ item }) => (
     <View style={styles.localContainer}>
@@ -113,8 +99,8 @@ const LocalList = () => {
             onFinishRating={() => {}}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => seguirLocal(item._id)}>
-          <Text>Seguir</Text>
+        <TouchableOpacity style={styles.button} onPress={() => dejarDeSeguirLocal(item._id)}>
+          <Text>Siguiendo</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
           <Text>Detalles</Text>
@@ -147,12 +133,13 @@ const LocalList = () => {
         keyExtractor={(item) => item.nombreSitio}
         renderItem={renderItem}
       />
-      {modalActividadesVisible && (
+            {modalActividadesVisible && (
         <Modal>
           <ModalActividades 
           actividades={actividadSeleccionada} />
         </Modal>
       )}
+      
       <Modal
         animationType="slide"
         transparent={true}
@@ -222,8 +209,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         padding: 10,
         borderRadius: 5,
-      },
-      modalBackground: {
+      },  modalBackground: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         flex: 1,
         justifyContent: 'center',

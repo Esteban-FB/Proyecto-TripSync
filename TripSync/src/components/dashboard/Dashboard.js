@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import ActivitiesTab from '../activitiesTab/ActivitiesTab'; // Importa tus componentes de pestañas aquí
 import MapTab from '../map/MapTab';
 import LocalList from '../locales/Local';
+import LocalTab from '../locales/TabLocales';
 import Agenda from '../agenda/MiAgenda'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AgregarSitio from '../sitios/AgregarSitio';
@@ -25,7 +26,7 @@ const Dashboard = () => {
     >
       <Tab.Screen
         name="Locales"
-        component={LocalList}
+        component={LocalTab}
         color = "darkblue"
         options={{
           tabBarLabel: 'Locales',

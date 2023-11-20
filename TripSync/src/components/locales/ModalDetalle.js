@@ -12,8 +12,8 @@ const ModalDetalle = ({ local, closeModal }) => {
     >
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={{ width: 300, height: 300, backgroundColor: 'white', padding: 20 }}>
-          <Text>{local.nombre}</Text>
-          <Text>Detalles del local: {local.nombre}</Text>
+          <Text>{local.nombreSitio}</Text>
+          <Text>Detalles del local: {local.nombreSitio}</Text>
           {/* Agrega más detalles según tu modelo */}
           <Button title="Cerrar" onPress={closeModal} />
         </View>
