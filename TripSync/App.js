@@ -4,11 +4,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/logIn/LogIn';
 import Dashboard from './src/components/dashboard/Dashboard';
 import { AuthProvider } from './src/utils/context/AuthContext'; 
-
+import { FirebaseProvider } from './src/utils/firebase/FireBaseContext';
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    <FirebaseProvider>
     <AuthProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
@@ -17,6 +18,7 @@ const App = () => {
       </Stack.Navigator>
     </NavigationContainer>
     </AuthProvider>
+    </FirebaseProvider>
   );
 };
 export default App;
