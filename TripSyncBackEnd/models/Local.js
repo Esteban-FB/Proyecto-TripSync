@@ -51,6 +51,10 @@ const LocalSchema = new mongoose.Schema({
         type:Array,
         required:true,
     },
+    reviews:{
+        type:Array,
+        required:true,
+    },
     usuarioLocal:{
         type:String,
         required:true

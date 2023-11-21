@@ -133,5 +133,27 @@ router.get('/getLocales', async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   });
+
+  router.put('/reviews/:localId', async (req, res) => {
+    const { localId } = req.params;
+    const { reviews } = req.body;
+  
+    try {
+      const local = await LocalModel.findById(localId);
+  
+      if (!local) {
+        return res.status(404).json({ message: 'Local no encontrado' });
+      }
+  
+      local.reviews = reviews; // Actualiza el campo 'reviews' del local con las nuevas reseñas
+  
+      await local.save(); // Guarda los cambios en la base de datos
+  
+      return res.status(200).json({ message: 'Reseñas actualizadas correctamente', local });
+    } catch (error) {
+      console.error('Error al actualizar las reseñas del local:', error.message);
+      return res.status(500).json({ message: 'Error del servidor al actualizar las reseñas del local' });
+    }
+  });
   
 module.exports = router;

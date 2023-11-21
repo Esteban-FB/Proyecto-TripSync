@@ -26,6 +26,7 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
   });
   const [rating, SetRating] = useState(0);
   const [usuarios, setUsuarios] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [usuarioLocal, setUser] = useState('');
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -47,7 +48,8 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
       SetLongitud(sitioAEditar.Longitud || ''); 
       setActividades(sitioAEditar.actividades || ''); 
       SetRating(sitioAEditar.rating || 0); 
-      setUsuarios(sitioAEditar.usuarios || ''); 
+      setUsuarios(sitioAEditar.usuarios || []); 
+      setReviews(sitioAEditar.reviews || [])
       setUser(sitioAEditar.usuarioLocal || ''); 
       setID(sitioAEditar._id || ''); 
       console.log("Este es el id del sitio:",_id);
@@ -105,6 +107,7 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
       actividades,
       rating,
       usuarios,
+      reviews,
       usuarioLocal
 
     };
