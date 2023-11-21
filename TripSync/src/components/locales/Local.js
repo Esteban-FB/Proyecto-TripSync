@@ -15,6 +15,10 @@ const LocalList = () => {
   const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [nombreLocal, setNombreLocal]=useState('');
 
+  const [detalleVisible, setDetalleVisible] = useState(false);
+  const [detalleLocal, setDetalleLocal] = useState(null);
+  const [detalleUsuarios, setDetalleUsuarios] = useState(null);
+
 
   useEffect(() => {
     if (user) {
@@ -34,8 +38,8 @@ const LocalList = () => {
 
     // Crear el objeto con los datos del usuario y el nuevo seguimiento
     const seguimiento = {
-      rating: 0, // Puedes establecer un valor por defecto o pedir al usuario que lo ingrese
-      comentario: '', // Aquí podrías pedir al usuario que ingrese un comentario si deseas
+      // rating: 0, // Puedes establecer un valor por defecto o pedir al usuario que lo ingrese
+      // comentario: '', // Aquí podrías pedir al usuario que ingrese un comentario si deseas
       usuario: user.user, // Usar la información del usuario actual obtenida del contexto
     };
 
@@ -116,7 +120,16 @@ const LocalList = () => {
         <TouchableOpacity style={styles.button} onPress={() => seguirLocal(item._id)}>
           <Text>Seguir</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            console.log("Este es el item a mostrar el detalle: ", item);
+            
+            setDetalleLocal(item);
+            setDetalleUsuarios(item.reviews);
+            setDetalleVisible(true);
+          }}
+        >
           <Text>Detalles</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => {
@@ -153,16 +166,13 @@ const LocalList = () => {
           actividades={actividadSeleccionada} />
         </Modal>
       )}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <ModalDetalle closeModal={() => setModalVisible(false)} />
-      </Modal>
+      {detalleVisible && detalleLocal && detalleUsuarios && (
+        <ModalDetalle
+          local={detalleLocal}
+          usuarios={detalleUsuarios}
+          closeModal={() => setDetalleVisible(false)}
+        />
+      )}
     </View>
   );
 
