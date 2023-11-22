@@ -27,6 +27,10 @@ const AgendaSchema = new mongoose.Schema({
         type: [DiaSchema],
         default: [],
     },
+    usuario:{
+        type: String,
+        required: true,
+    }
 });
 
 const AgendaModel = mongoose.model('MiAgenda', AgendaSchema);
