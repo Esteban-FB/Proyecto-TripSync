@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, TextInput, Image, TouchableOpacity, Modal, Button, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { Rating } from 'react-native-ratings';
 import ModalDetalle from './ModalDetalle'; 
 import axios from 'axios';
 import { useAuth } from '../../utils/context/AuthContext'; // Suponiendo que aquí tienes el contexto con la información del usuario
+import Swiper from 'react-native-swiper';
 
 const LocalList = () => {
   const {user } = useAuth(); // Obteniendo la información del usuario desde el contexto
@@ -11,6 +13,7 @@ const LocalList = () => {
   const [locales, setLocales] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [filtro, setFiltro] = useState('');
+  const [filtroRating, setFiltroRating] = useState(0); 
   const [modalActividadesVisible, setModalActividadesVisible] = useState(false);
   const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [nombreLocal, setNombreLocal]=useState('');
@@ -60,13 +63,14 @@ const LocalList = () => {
     const selectedDay = actividad.fecha; // Obtener la fecha de la actividad
     const newEventText = localNombre; // Nombre del Local del item que contiene las actividades
     const newEventDetails = actividad.nombre; // Nombre de la actividad
-  
+    console.log("fecha: ",selectedDay," ","EventoN: ",newEventText," ","Detalle: ",newEventDetails);
     try {
       // Enviar el evento al servidor usando Axios
       await axios.post('http://10.0.2.2:5000/api/agenda/agregar-evento', {
         date: selectedDay,
         text: newEventText,
         details: newEventDetails,
+        usuario:user.user,
       });
   
       // Manejar la respuesta del servidor si es necesario
@@ -77,7 +81,7 @@ const LocalList = () => {
     }
   };
 
-  const ModalActividades = ({ actividades, nombreLocal }) => {
+  const ModalActividades = ({ actividades }) => {
     return (
       <View style={styles.modalContainer}>
         <Text style={styles.actividadesHeaderText}>Actividades del lugar:</Text>
@@ -103,22 +107,39 @@ const LocalList = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.localContainer}>
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: item.foto }} style={styles.image} />
+      <Swiper style={styles.wrapper} showsButtons={true}>
+        <View style={styles.slide}>
+          <Image source={require('../../assets/gruposA.png')} style={styles.image} />
+        </View>
+        <View style={styles.slide}>
+        <Image
+          style={styles.image}
+          source={ require('../../assets/Sitios.png' )}
+          resizeMode="cover"
+        />
       </View>
+      <View style={styles.slide}>
+        <Image
+          style={styles.image}
+          source={ require('../../assets/grupos.jpg' )}
+          resizeMode="cover"
+        />
+      </View>
+      </Swiper>
       <View style={styles.detailsContainer}>
-        <Text style={styles.nombre}>{item.nombreSitio}</Text>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.nombre}>{item.nombreSitio} - {item.tipoSitio}</Text>
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.ratingContainer}>
           <Rating
             type="star"
-            startingValue={item.calificacionPromedio}
+            startingValue={item.rating}
             imageSize={20}
             showRating={false}
-            onFinishRating={() => {}}
+            readonly={true}
           />
         </TouchableOpacity>
+        <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => seguirLocal(item._id)}>
-          <Text>Seguir</Text>
+          <Text style={styles.buttonText}>Seguir</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -130,7 +151,7 @@ const LocalList = () => {
             setDetalleVisible(true);
           }}
         >
-          <Text>Detalles</Text>
+          <Text style={styles.buttonText}>Detalles</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => {
             setActividadSeleccionada(item.actividades); // Guarda las actividades del elemento seleccionado
@@ -139,26 +160,64 @@ const LocalList = () => {
             console.log('modalActividadesVisible:', item.actividades); // Agrega esto para verificar si modalActividadesVisible cambia a true
             }}
             >
-            <Text>Actividades</Text>
+            <Text style={styles.buttonText}>Actividades</Text>
         </TouchableOpacity>
+        </View>
       </View>
+      {/* <View style={styles.separator} /> */}
     </View>
   );
 
-  const localesFiltrados = locales.filter(local => local.nombreSitio.toLowerCase().includes(filtro.toLowerCase()));
-
+  //const localesFiltrados = locales.filter(local => local.nombreSitio.toLowerCase().includes(filtro.toLowerCase()));
+  // const localesFiltrados = locales.filter((local) => {
+  //   const nombreIncluido = local.nombreSitio.toLowerCase().includes(filtroNombre.toLowerCase());
+  //   const ratingValido = filtroRating === 0 || local.rating >= filtroRating;
+  //   return nombreIncluido && ratingValido;
+  // });
+  // const localesFiltrados = locales.filter((local) => {
+  //   const nombreIncluido = local.nombreSitio.toLowerCase().includes(filtro.toLowerCase());
+  //   const ratingValido = filtroRating === 0 || local.rating >= filtroRating;
+  //   return nombreIncluido && ratingValido;
+  // });
+  const localesFiltrados = locales.filter((local) => {
+    const nombreIncluido = local.nombreSitio.toLowerCase().includes(filtro.toLowerCase());
+  
+    if (filtroRating === '0') {
+      return nombreIncluido; // Muestra todos si no hay filtro por rating
+    } else {
+      const minRating = parseInt(filtroRating);
+      return nombreIncluido && local.rating >= minRating;
+    }
+  });
     return (
     <View>
-      <TextInput
-        placeholder="Filtrar por nombre..."
-        style={styles.input}
-        value={filtro}
-        onChangeText={(text) => setFiltro(text)}
-      />
+      <View style={styles.filtersContainer}>
+      <View style={styles.filterRow}>
+          <TextInput
+            placeholder="Filtrar por nombre..."
+            style={[styles.input, styles.smallInput]}
+            value={filtro}
+            onChangeText={(text) => setFiltro(text)}
+          />
+          <Picker
+            selectedValue={filtroRating}
+            style={[styles.picker, styles.smallPicker]}
+            onValueChange={(itemValue) => setFiltroRating(itemValue)}
+          >
+          <Picker.Item label="Filtrar rating" value="0" />
+          <Picker.Item label="1 o más" value="1" />
+          <Picker.Item label="2 o más" value="2" />
+          <Picker.Item label="3 o más" value="3" />
+          <Picker.Item label="4 o más" value="4" />
+          <Picker.Item label="5" value="5" />
+          </Picker>
+          </View>
+        </View>
       <FlatList
         data={localesFiltrados}
-        keyExtractor={(item) => item.nombreSitio}
+        keyExtractor={(item) => item._id}
         renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
       />
       {modalActividadesVisible && (
         <Modal>
@@ -173,6 +232,7 @@ const LocalList = () => {
           closeModal={() => setDetalleVisible(false)}
         />
       )}
+      
     </View>
   );
 
@@ -180,50 +240,50 @@ const LocalList = () => {
 };
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: '#2196F3',
-        borderRadius: 5,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 10,
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    localContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
-      },
-      imageContainer: {
-        marginRight: 10,
-      },
-      image: {
-        width: 80,
-        height: 80,
-        borderRadius: 8,
-      },
-      detailsContainer: {
-        flex: 1,
-      },
-      nombre: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 5,
-      },
-      button: {
-        backgroundColor: '#3498db',
-        padding: 8,
-        borderRadius: 5,
-        marginTop: 5,
-      },
+    // button: {
+    //     backgroundColor: '#2196F3',
+    //     borderRadius: 5,
+    //     padding: 10,
+    //     elevation: 2,
+    //     marginBottom: 10,
+    // },
+    // buttonText: {
+    //     color: 'white',
+    //     fontWeight: 'bold',
+    // },
+    // // localContainer: {
+    // //     flexDirection: 'row',
+    // //     justifyContent: 'space-between',
+    // //     alignItems: 'center',
+    // //     backgroundColor: 'white',
+    // //     padding: 10,
+    // //     marginBottom: 10,
+    // //     borderRadius: 8,
+    // //     borderWidth: 1,
+    // //     borderColor: '#ddd',
+    // //   },
+    // //   imageContainer: {
+    // //     marginRight: 10,
+    // //   },
+    // //   image: {
+    // //     width: 80,
+    // //     height: 80,
+    // //     borderRadius: 8,
+    // //   },
+    //   detailsContainer: {
+    //     flex: 1,
+    //   },
+    //   nombre: {
+    //     fontSize: 16,
+    //     fontWeight: 'bold',
+    //     marginBottom: 5,
+    //   },
+    //   button: {
+    //     backgroundColor: '#3498db',
+    //     padding: 8,
+    //     borderRadius: 5,
+    //     marginTop: 5,
+    //   },
       input: {
         height: 40,
         backgroundColor: 'white',
@@ -274,6 +334,117 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+      },    
+      // separator: {
+      //   borderBottomWidth: 1,
+      //   borderBottomColor: '#ccc',
+      //   marginBottom: 5,
+      // },  
+      filtersContainer: {
+        padding: 10,
+        backgroundColor: '#fff',
+        marginBottom: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
       },
+      filterRow: {
+        
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      inputtext: {
+        flex: 1,
+        height: 35,
+        backgroundColor: 'white',
+        borderColor: 'gray',
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        marginRight: 5,
+      },
+      smallInput: {
+        flex: 1,
+        height: 35,
+        maxWidth: '48%', // Ajusta el tamaño según lo necesario
+      },
+      picker: {
+        flex: 1,
+        height: 30,
+        backgroundColor: 'lightgray',
+        borderRadius: 20,
+        borderWidth: 0,
+        borderColor: '#ccc',
+        overflow: 'hidden',
+      },
+      smallPicker: {
+        height: 30,
+        maxWidth: '48%',
+        maxHeight: '10%', // Ajusta el tamaño según lo necesario
+      },
+      listContent: {
+        paddingBottom: 100, // Ajusta el valor según sea necesario
+      },
+      //para el carrusel de imagenes
+      localContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        padding: 15,
+        marginBottom: 15,
+      },
+      wrapper: {
+        height: 200,
+        marginBottom: 15,
+      },
+      slide: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      image: {
+        width: '70%',
+        height: '100%',
+        borderRadius: 8,
+      },
+      detailsContainer: {
+        alignItems: 'center',
+        marginBottom: 15,
+      },
+      nombre: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+      },
+      ratingContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+      },
+      buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      button: {
+        flex:1,
+        backgroundColor: '#2196F3',
+        borderRadius: 5,
+        marginRight:10,
+        padding: 10,
+        width: '30%',
+        alignItems: 'center',
+      },
+      buttonText: {
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+      },
+      separator: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#CCCCCC',
+        marginBottom: 10,
+      },
+
 });
 export default LocalList;

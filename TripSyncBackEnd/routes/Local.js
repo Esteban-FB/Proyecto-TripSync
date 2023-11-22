@@ -156,4 +156,31 @@ router.get('/getLocales', async (req, res) => {
     }
   });
   
+  router.put('/actualizaRating/:localId', (req, res) => {
+    const localId = req.params.localId;
+    const newRating = req.body.rating;
+    console.log("Entro a editar el rating", localId);
+    // Aquí iría la lógica para actualizar el rating del local con el ID proporcionado (localId)
+    // Por ejemplo, podrías tener una base de datos y realizar una actualización en la entrada correspondiente al local con ese ID
+    
+    // Ejemplo de actualización de la base de datos (usando un modelo hipotético "Local")
+    LocalModel.findById(localId, (err, local) => {
+      if (err || !local) {
+        return res.status(404).json({ message: 'Local no encontrado' });
+      }
+  
+      // Actualizar el rating del local con el nuevo rating
+      local.rating = newRating;
+  
+      // Guardar el local actualizado en la base de datos
+      local.save((err, updatedLocal) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error al actualizar el rating del local' });
+        }
+  
+        return res.status(200).json({ message: 'Rating del local actualizado exitosamente', updatedLocal });
+      });
+    });
+  });
+
 module.exports = router;

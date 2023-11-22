@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { map,useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -6,9 +6,11 @@ import {
     TextInput,
     Modal,
     StyleSheet,
+    Alert 
 } from 'react-native';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import axios from 'axios'; // Asegúrate de instalar axios: npm install axios
+import { useAuth } from '../../utils/context/AuthContext'; // Suponiendo que aquí tienes el contexto con la información del usuario
 
 // Componente interno optimizado con React.memo
 const EventItem = React.memo(({ event, onPress }) => {
@@ -21,16 +23,49 @@ const EventItem = React.memo(({ event, onPress }) => {
 });
 
 const MiAgenda = React.memo(() => {
-    const [items, setItems] = useState({
-        '2023-11-29': [{ text: 'Evento 1', details: 'Detalles del Evento 1' }],
-        '2023-11-20': [{ text: 'Evento 2', details: 'Detalles del Evento 2' }],
-        '2023-11-19': [],
-    });
-
+    const {user } = useAuth(); // Obteniendo la información del usuario desde el contexto
+    // const [items, setItems] = useState({
+    //     '2023-11-29': [{ text: 'Evento 1', details: 'Detalles del Evento 1' }],
+    //     '2023-11-29': [{ text: 'Evento 2', details: 'Detalles del Evento 2' }],
+    //     '2023-11-19': [],
+    // });
+     const [items, setItems] = useState({});
     const [isModalVisible, setModalVisible] = useState(false);
     const [newEventText, setNewEventText] = useState('');
     const [newEventDetails, setNewEventDetails] = useState('');
     const [selectedDay, setSelectedDay] = useState(null);
+
+    useEffect(() => {
+        const fetchUserDays = async () => {
+            try {
+                const response = await axios.get(`http://10.0.2.2:5000/api/agenda/dias-usuario/${user.user}`);
+                const userDays = response.data || [];
+                console.log("llega",userDays);
+                const formattedItems = {};
+
+                userDays.forEach((day) => {
+                    const { date, events } = day.dias[0];
+                    console.log("entro",date)
+                    const formattedEvents = events.map((event, index) => ({
+                        text: event.text, // Texto del evento desde la base de datos
+                        details: event.details, // Detalles del evento desde la base de datos
+                    }));
+
+                    formattedItems[date] = formattedEvents;
+                });
+                console.log("formattedItems",formattedItems);
+                setItems((prevItems) => {
+                    // Limpiar el estado anterior antes de agregar los nuevos datos
+                    return { ...prevItems, ...formattedItems };
+                });
+                console.log("items",items);
+            } catch (error) {
+                console.error('Error al obtener los días del usuario:', error.message);
+            }
+        };
+
+        fetchUserDays();
+    }, [user.user]);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -74,6 +109,7 @@ const MiAgenda = React.memo(() => {
                 date: selectedDay,
                 text: newEventText,
                 details: newEventDetails,
+                usuario: user.user,
             });
 
             // Manejar la respuesta del servidor si es necesario
@@ -84,21 +120,51 @@ const MiAgenda = React.memo(() => {
         }
     };
 
-    const renderEvent = useCallback(
-        (event) => (
-            <EventItem event={event} onPress={() => alert(JSON.stringify(event.details).replace(/"/g, ''))} />
-        ),
-        []
+    // const renderEvent = useCallback(
+    //     (event) => (
+    //         <EventItem event={event} onPress={() => alert(JSON.stringify(event.details).replace(/"/g, ''))} />
+    //     ),
+    //     []
+    // );
+    const renderEvent = (event) => (
+        // Renderizar cada evento como lo hacías antes
+        <EventItem event={event} onPress={() => alert(JSON.stringify(event.details))} />
     );
+    
+    const onDayPress = (day) => {
+        const currentDate = new Date(); // Obtener la fecha actual
+        const selectedDate = new Date(day.dateString); // Obtener la fecha seleccionada
+
+        // Verificar si la fecha seleccionada es anterior a la fecha actual
+        if (selectedDate < currentDate) {
+            Alert.alert('Error', 'No puedes crear eventos en fechas pasadas.');
+        } else {
+            setSelectedDay(day.dateString);
+            toggleModal(); // Mostrar el modal cuando se selecciona un día
+        }
+    };
+
+
 
     return (
-        <View style={{ flex: 1 }}>
-            <CalendarProvider>
-                <Agenda
+        <View style={{ flex: 1}}>
+            <CalendarProvider >
+                {/* <Agenda
                     onDayLongPress={(day) => {
                         setSelectedDay(day.dateString);
                         toggleModal(); // Mostrar el modal cuando se selecciona un día
                     }}
+                    items={items} // Utilizar el estado items para representar los eventos en la Agenda
+                    renderItem={renderEvent}
+                    renderEmptyDate={() => (
+                        <View
+                            style={{ height: 15, flex: 1, backgroundColor: 'lightgray' }}
+                        />
+                    )}
+                    rowHasChanged={(r1, r2) => r1.text !== r2.text}
+                /> */}
+                <Agenda
+                    onDayLongPress={onDayPress} // Utilizar la función de validación en el evento onDayLongPress
                     items={items}
                     renderItem={renderEvent}
                     renderEmptyDate={() => (
@@ -109,7 +175,7 @@ const MiAgenda = React.memo(() => {
                     rowHasChanged={(r1, r2) => r1.text !== r2.text}
                 />
             </CalendarProvider>
-
+                        
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -142,8 +208,11 @@ const MiAgenda = React.memo(() => {
                     </View>
                 </View>
             </Modal>
+            <View style={styles.separator} />
         </View>
+        
     );
+    
 });
 
 const styles = StyleSheet.create({
@@ -209,6 +278,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    separator: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        marginBottom: 5,
+      },
 });
 
 export default MiAgenda;

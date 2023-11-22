@@ -409,30 +409,37 @@ const styles = StyleSheet.create({
   },
     // Estilos para el modal de editar fiesta
     editModalContainer: {
-      alignItems:'center',
-      width: '80%',
-      height: '80%',
+      margin: 20,
       backgroundColor: 'white',
-      padding: 20,
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#ccc',
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
       elevation: 5,
       // Otros estilos específicos del modal de edición
     },
   
     // Estilos para el modal de invitar usuario
     inviteModalContainer: {
-      alignItems:'center',
-      width: '80%',
-      height: '80%',
+      margin: 20,
       backgroundColor: 'white',
-      padding: 20,
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#ccc',
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
       elevation: 5,
-      // Otros estilos específicos del modal de invitación
     },
     buttonContainer2: {
       flexDirection: 'row',
@@ -447,12 +454,18 @@ const styles = StyleSheet.create({
       borderColor: '#ccc',
     },
     activitiesModalContainer: {
-      width: '80%',
+      margin: 20,
       backgroundColor: 'white',
-      padding: 20,
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#ccc',
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
       elevation: 5,
     },
     modalHeaderText: {

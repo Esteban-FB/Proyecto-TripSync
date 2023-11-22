@@ -38,6 +38,13 @@ const ModalDetalle = ({ local, usuarios, closeModal }) => {
   
       try {
         await axios.put(`http://10.0.2.2:5000/api/locales/reviews/${local._id}`, { reviews: usuarios });
+
+        const allRatings = usuarios.map((usuario) => usuario.rating);
+        const totalRatings = allRatings.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+        const averageRating = totalRatings / allRatings.length;
+  
+        // Actualizar el campo de rating del local con el nuevo promedio
+        await axios.put(`http://10.0.2.2:5000/api/locales/actualizaRating/${local._id}`, { rating: averageRating });
         setUserReview({ rating: 0, comentario: '' });
       } catch (error) {
         console.error('Error al actualizar el local con la nueva review:', error.message);
