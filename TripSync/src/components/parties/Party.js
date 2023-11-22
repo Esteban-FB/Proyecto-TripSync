@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Button, Modal, TextInput, StyleSheet, ImageBackground  } from 'react-native';
+import { View, Text, ScrollView, Button, Modal, TextInput, StyleSheet, ImageBackground, TouchableOpacity  } from 'react-native';
 import { useFirebase } from '../../utils/firebase/FireBaseContext';
 import { getFirestore, collection, getDocs, query, where, arrayContains, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../utils/context/AuthContext';
@@ -262,7 +262,7 @@ function Party() {
 
   return (
     <ImageBackground
-      source={require('../../assets/background-image.jpg')} // Ruta de la imagen en tus assets
+      source={require('../../assets/gruposA.png')} // Ruta de la imagen en tus assets
       style={styles.background}
     >
     <ScrollView style={styles.container}>
@@ -358,8 +358,13 @@ function Party() {
         </Modal>
       )}
       
-      <Button title="Crear Nueva Party" onPress={() => openEditModal({})} />
+      
     </ScrollView>
+    <View style={styles.container2}>
+      <TouchableOpacity onPress={() => openEditModal({})} style={styles.customButton}>
+        <Text style={styles.customButtonText}>Crear nuevo grupo</Text>
+      </TouchableOpacity>
+    </View>
     </ImageBackground>
   );
 }
@@ -372,6 +377,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    //maxHeight: '90%',
   },
   partyContainer: {
     borderWidth: 1,
@@ -468,6 +474,25 @@ const styles = StyleSheet.create({
       borderBottomWidth: 1,
       borderBottomColor: '#ccc',
       marginBottom: 5,
+    },
+    customButton: {
+      backgroundColor: 'green',
+      borderRadius: 15,
+      width: 150,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    customButtonText: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    container2: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      maxHeight:45
     },
 });
 export default Party;

@@ -15,6 +15,10 @@ const LocalList = () => {
   const [actividadSeleccionada, setActividadSeleccionada] = useState(null);
   const [nombreLocal, setNombreLocal]=useState('');
 
+  const [detalleVisible, setDetalleVisible] = useState(false);
+  const [detalleLocal, setDetalleLocal] = useState(null);
+  const [detalleUsuarios, setDetalleUsuarios] = useState(null);
+
   useEffect(() => {
     if (user) {
       axios.get(`http://10.0.2.2:5000/api/locales/getLocalesCoinciden/${user.user}`)
@@ -102,7 +106,16 @@ const LocalList = () => {
         <TouchableOpacity style={styles.button} onPress={() => dejarDeSeguirLocal(item._id)}>
           <Text>Siguiendo</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            console.log("Este es el item a mostrar el detalle: ", item);
+            
+            setDetalleLocal(item);
+            setDetalleUsuarios(item.reviews);
+            setDetalleVisible(true);
+          }}
+        >
           <Text>Detalles</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => {
@@ -140,16 +153,13 @@ const LocalList = () => {
         </Modal>
       )}
       
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <ModalDetalle closeModal={() => setModalVisible(false)} />
-      </Modal>
+      {detalleVisible && detalleLocal && detalleUsuarios && (
+        <ModalDetalle
+          local={detalleLocal}
+          usuarios={detalleUsuarios}
+          closeModal={() => setDetalleVisible(false)}
+        />
+      )}
     </View>
   );
 
