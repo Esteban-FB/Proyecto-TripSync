@@ -4,6 +4,7 @@ import { useFirebase } from '../../utils/firebase/FireBaseContext';
 import { getFirestore, collection, getDocs, query, where, arrayContains, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../utils/context/AuthContext';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function Party() {
   const { user } = useAuth();
@@ -287,6 +288,8 @@ function Party() {
           </View>
         </View>
       ))}
+
+
       {/* Modal para invitar usuario */}
       <Modal visible={inviteModalVisible} transparent={true} animationType="slide">
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -325,7 +328,7 @@ function Party() {
                 <Text alignItems='center' key={index}>{usuario}</Text>
               ))}
             </View>
-          )}
+            )}
           <View style={styles.buttonContainer2}>
             <Button style={styles.button} title="Guardar grupo" onPress={manejarGuardarParty} />
             <Button style={styles.button} title="Cancelar" onPress={() => {
@@ -345,7 +348,7 @@ function Party() {
               {activities.map((activity, index) => (
                 <View key={index} style={styles.commentContainer}>
                   <Text style={styles.sectionHeader}>Actividad: {activity.nombre}</Text>
-                  <Text style={styles.sectionHeader}>Fecha: {activity.fecha}</Text>
+                  <Text style={styles.sectionHeader}> {activity.fecha}</Text>
                   {/* Aquí puedes mostrar otros detalles de la actividad si es necesario */}
                   <View style={styles.separator} />
                 </View>
@@ -360,11 +363,27 @@ function Party() {
       
       
     </ScrollView>
-    <View style={styles.container2}>
+    {/* <View style={styles.container2}>
       <TouchableOpacity onPress={() => openEditModal({})} style={styles.customButton}>
         <Text style={styles.customButtonText}>Crear nuevo grupo</Text>
       </TouchableOpacity>
-    </View>
+    </View> */}
+      <TouchableOpacity
+    style={{
+      position: 'absolute',
+      bottom: 30,
+      right: 20,
+      width: 45,
+      height: 45,
+      borderRadius: 30,
+      backgroundColor: 'darkgreen', // Puedes cambiar el color de fondo del botón
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    onPress={() => openEditModal({})}
+  >
+    <Icon name="plus" size={30} color="white" />
+  </TouchableOpacity>
     </ImageBackground>
   );
 }
@@ -377,11 +396,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    
     //maxHeight: '90%',
   },
   partyContainer: {
-    borderWidth: 1,
-    borderColor: 'gray',
+    borderWidth: 3,
+    borderRadius:20,
+    borderColor: 'lightgray',
     padding: 10,
     marginBottom: 20,
     backgroundColor:'white'
@@ -506,6 +527,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       maxHeight:45
+    },
+    scrollView: {
+      maxHeight: '10%',
     },
 });
 export default Party;
