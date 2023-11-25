@@ -1,6 +1,6 @@
 //import * as React from 'react';
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Switch, Button, Image, ScrollView, Modal, Pressable } from 'react-native';
+import { View, Text, TextInput, Switch, Button, Image, ScrollView, Modal, Pressable,StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from '../../utils/context/AuthContext'; // Ajusta la ruta según tu estructura de carpetas
@@ -154,19 +154,23 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
       visible={visible}
       onRequestClose={onClose}
     >
-      <ScrollView style={{ padding: 20, backgroundColor: 'white', flex: 1 }}>
-        <Text>Nombre del sitio:</Text>
+      <ScrollView style={{ padding: 20, backgroundColor: 'white'}}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Nombre del sitio:</Text>
         <TextInput
+          style={styles.input}
           placeholder="Ejemplo: Hotel Paradise"
           value={nombreSitio}
           onChangeText={text => setNombreSitio(text)}
         />
-
-      <Text>Tipo de sitio:</Text>
-      <Picker
-        selectedValue={tipoSitio}
-        onValueChange={itemValue => setTipoSitio(itemValue)}
-      >
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Tipo de sitio:</Text>
+        <Picker
+          style={styles.picker}
+          selectedValue={tipoSitio}
+          onValueChange={itemValue => setTipoSitio(itemValue)}
+        >
         <Picker.Item label="Hospedaje" value="Hospedaje" />
         <Picker.Item label="Recreativo" value="Recreativo" />
         <Picker.Item label="Aventura" value="Aventura" />
@@ -175,9 +179,12 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
         <Picker.Item label="Natural" value="Natural" />
         <Picker.Item label="Otro" value="Otro" />
       </Picker>
+      </View>
 
-      <Text>Descripción:</Text>
+      <View style={styles.inputContainer}>
+      <Text style={styles.label}>Descripción:</Text>
       <TextInput
+      style={styles.input}
         placeholder="Escribe una descripción más detallada..."
         multiline
         numberOfLines={4}
@@ -185,50 +192,68 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
         onChangeText={text => setDescripcionExtensa(text)}
       />
       <View>
-      <Text>Ubicación:</Text>
-      <Text>Direccion:</Text>
+      </View>
+
+      <View style={styles.inputContainer}>
+      <Text style={styles.label}>Direccion:</Text>
       <TextInput
+      style={styles.input}
         placeholder="Ejemplo: 123 Calle Principal, Ciudad"
         value={ubicacion}
         onChangeText={text => setUbicacion(text)}
       />
-      <Text>Coordenadas:</Text>
-      <TextInput
-        keyboardType='numeric'
-        placeholder="Latitud"
-        value={Latitud}
-        onChangeText={text => SetLatitud(text)}
-      />
-      <TextInput
-        keyboardType='numeric'
-        placeholder="Longitud"
-        value={Longitud}
-        onChangeText={text => SetLongitud(text)}
-      />
       </View>
-      <Text>Requiere reserva:</Text>
+      <View style={styles.inputContainer}>
+      <Text style={styles.label}>Coordenadas:</Text>
+      <View style={styles.buttonsContainer2}>
+        <TextInput
+        style={styles.input}
+          keyboardType='numeric'
+          placeholder="Latitud"
+          value={Latitud.toString()}
+          onChangeText={text => SetLatitud(text)}
+        />
+        <TextInput
+        style={styles.input}
+          keyboardType='numeric'
+          placeholder="Longitud"
+          value={Longitud.toString()}
+          onChangeText={text => SetLongitud(text)}
+        />
+        </View>
+      </View>
+      </View>
+      <View style={styles.inputContainerReserva}>
+      <Text style={styles.labelReserva}>Requiere reserva:</Text>
       <Switch
         value={requiereReserva}
         onValueChange={value => setRequiereReserva(value)}
       />
-
+    </View>
       {/*Actividades*/}
-      {/* Mostrar actividades agregadas */}
-      <Text>Actividades:</Text>
-        {actividades.map((actividad, index) => (
-          <View key={index}>
-            <Text>{actividad.nombre} - {actividad.fecha}</Text>
-            <Button title="Eliminar" onPress={() => handleDeleteActividad(index)} />
-          </View>
-        ))}
 
-        <Text>Nueva Actividad:</Text>
+      {/* Mostrar actividades agregadas */}
+    {/* Actividades */}
+    <View style={styles.activitiesContainer}>
+      <Text style={styles.sectionTitle}>Actividades:</Text>
+      {actividades.map((actividad, index) => (
+        <View key={index} style={styles.activityItem}>
+          <Text>{actividad.nombre} - {actividad.fecha}</Text>
+          <Button title="Eliminar" onPress={() => handleDeleteActividad(index)} color="red" />
+        </View>
+      ))}
+    </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Nueva Actividad:</Text>
         <TextInput
+        style={styles.input}
           placeholder="Nombre de la actividad"
           value={nuevaActividad.nombre}
           onChangeText={text => setNuevaActividad({ ...nuevaActividad, nombre: text })}
         />
+        </View>
 
+        <View style={styles.buttonsContainer2}>
         <Button title="Agregar Actividad" onPress={handleAgregarActividad} />
 
         {/* DatePicker para la fecha de la nueva actividad */}
@@ -241,35 +266,126 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
             onChange={handleDateChange}
           />
         )}
+        </View>
       {/* Agregar opción para adjuntar fotos o videos según tus necesidades */}
+          <View style={styles.inputContainer}>
+          <Text style={styles.label}>Horario:</Text>
+          <TextInput
+          style={styles.input}
+            placeholder="Ejemplo: Abierto de 9:00 AM a 6:00 PM"
+            value={horario}
+            onChangeText={text => setHorario(text)}
+          />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Contacto (Teléfono):</Text>
+        <TextInput
+        style={styles.input}
+          placeholder="Ejemplo: (+506) 2222-2222"
+          value={contactoTelefono}
+          onChangeText={text => setContactoTelefono(text)}
+        />
+      </View>
 
-      <Text>Horario:</Text>
-      <TextInput
-        placeholder="Ejemplo: Abierto de 9:00 AM a 6:00 PM"
-        value={horario}
-        onChangeText={text => setHorario(text)}
-      />
-
-      <Text>Contacto (Teléfono):</Text>
-      <TextInput
-        placeholder="Ejemplo: (+506) 2222-2222"
-        value={contactoTelefono}
-        onChangeText={text => setContactoTelefono(text)}
-      />
-
-      <Text>Contacto (Correo):</Text>
-      <TextInput
-        placeholder="Ejemplo: correo@example.com"
-        value={contactoCorreo}
-        onChangeText={text => setContactoCorreo(text)}
-      />
-
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Contacto (Correo):</Text>
+        <TextInput
+        style={styles.input}
+          placeholder="Ejemplo: correo@example.com"
+          value={contactoCorreo}
+          onChangeText={text => setContactoCorreo(text)}
+        />
+      </View>
+      <View style={styles.buttonsContainer3}>
+        <Button style={styles.button} title={modoEdicion ? 'Actualizar' : 'Registrar'} onPress={handleRegistro} />
+        <Button style={styles.button} title="Cerrar" onPress={onClose} />
+      </View>
       </ScrollView>
 
-      <Button title={modoEdicion ? 'Actualizar' : 'Registrar'} onPress={handleRegistro} />
-      <Button title="Cerrar" onPress={onClose} />
       </Modal>
   );
+};
+
+const styles = {
+  inputContainer: {
+    marginBottom: 20,
+  },
+  inputContainerFinal: {
+    marginBottom: 40,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+  },
+  picker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  activitiesContainer: {
+    //maxHeight: 150,
+    marginBottom: 20,
+  },
+  activityItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor:'white'
+  },
+  bottom:{
+    padding:100
+  },
+  inputContainerReserva: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  labelReserva: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  buttonsContainer2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor:'white',
+    marginBottom:5
+  },
+  buttonsContainer3: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor:'white',
+    marginBottom:30
+    
+  },
+  button: {
+    flex:1,
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
+    marginRight:10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
 };
 
 export default RegistrarSitio;

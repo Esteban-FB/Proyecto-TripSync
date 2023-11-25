@@ -6,11 +6,13 @@ import {
     TextInput,
     Modal,
     StyleSheet,
-    Alert 
+    Alert,
+    ImageBackground 
 } from 'react-native';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import axios from 'axios'; // Asegúrate de instalar axios: npm install axios
 import { useAuth } from '../../utils/context/AuthContext'; // Suponiendo que aquí tienes el contexto con la información del usuario
+import { useFocusEffect } from '@react-navigation/native';
 
 // Componente interno optimizado con React.memo
 const EventItem = React.memo(({ event, onPress }) => {
@@ -35,37 +37,70 @@ const MiAgenda = React.memo(() => {
     const [newEventDetails, setNewEventDetails] = useState('');
     const [selectedDay, setSelectedDay] = useState(null);
 
-    useEffect(() => {
-        const fetchUserDays = async () => {
+    // useEffect(() => {
+    //     const fetchUserDays = async () => {
+    //         try {
+    //             const response = await axios.get(`http://10.0.2.2:5000/api/agenda/dias-usuario/${user.user}`);
+    //             const userDays = response.data || [];
+    //             console.log("llega",userDays);
+    //             const formattedItems = {};
+
+    //             userDays.forEach((day) => {
+    //                 const { date, events } = day.dias[0];
+    //                 console.log("entro",date)
+    //                 const formattedEvents = events.map((event, index) => ({
+    //                     text: event.text, // Texto del evento desde la base de datos
+    //                     details: event.details, // Detalles del evento desde la base de datos
+    //                 }));
+
+    //                 formattedItems[date] = formattedEvents;
+    //             });
+    //             console.log("formattedItems",formattedItems);
+    //             setItems((prevItems) => {
+    //                 // Limpiar el estado anterior antes de agregar los nuevos datos
+    //                 return { ...prevItems, ...formattedItems };
+    //             });
+    //             console.log("items",items);
+    //         } catch (error) {
+    //             console.error('Error al obtener los días del usuario:', error.message);
+    //         }
+    //     };
+
+    //     fetchUserDays();
+    // }, [user.user]);
+    useFocusEffect(
+        React.useCallback(() => {
+          const fetchUserDays = async () => {
             try {
-                const response = await axios.get(`http://10.0.2.2:5000/api/agenda/dias-usuario/${user.user}`);
-                const userDays = response.data || [];
-                console.log("llega",userDays);
-                const formattedItems = {};
-
-                userDays.forEach((day) => {
-                    const { date, events } = day.dias[0];
-                    console.log("entro",date)
-                    const formattedEvents = events.map((event, index) => ({
-                        text: event.text, // Texto del evento desde la base de datos
-                        details: event.details, // Detalles del evento desde la base de datos
-                    }));
-
-                    formattedItems[date] = formattedEvents;
-                });
-                console.log("formattedItems",formattedItems);
-                setItems((prevItems) => {
-                    // Limpiar el estado anterior antes de agregar los nuevos datos
-                    return { ...prevItems, ...formattedItems };
-                });
-                console.log("items",items);
+              const response = await axios.get(`http://10.0.2.2:5000/api/agenda/dias-usuario/${user.user}`);
+              const userDays = response.data || [];
+              console.log("llega", userDays);
+              const formattedItems = {};
+      
+              userDays.forEach((day) => {
+                const { date, events } = day.dias[0];
+                console.log("entro", date);
+                const formattedEvents = events.map((event, index) => ({
+                  text: event.text, // Texto del evento desde la base de datos
+                  details: event.details, // Detalles del evento desde la base de datos
+                }));
+      
+                formattedItems[date] = formattedEvents;
+              });
+              console.log("formattedItems", formattedItems);
+              setItems((prevItems) => {
+                // Limpiar el estado anterior antes de agregar los nuevos datos
+                return { ...prevItems, ...formattedItems };
+              });
+              console.log("items", items);
             } catch (error) {
-                console.error('Error al obtener los días del usuario:', error.message);
+              console.error('Error al obtener los días del usuario:', error.message);
             }
-        };
-
-        fetchUserDays();
-    }, [user.user]);
+          };
+      
+          fetchUserDays();
+        }, [user.user])
+      );
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -148,6 +183,7 @@ const MiAgenda = React.memo(() => {
 
     return (
         <View style={{ flex: 1}}>
+            
             <CalendarProvider >
                 {/* <Agenda
                     onDayLongPress={(day) => {
@@ -163,6 +199,7 @@ const MiAgenda = React.memo(() => {
                     )}
                     rowHasChanged={(r1, r2) => r1.text !== r2.text}
                 /> */}
+                
                 <Agenda
                     onDayLongPress={onDayPress} // Utilizar la función de validación en el evento onDayLongPress
                     items={items}

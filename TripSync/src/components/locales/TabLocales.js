@@ -1,15 +1,9 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Locales from './Local'
+import Sitios from './Local'
 import Siguiendo from './Siguiendo'
-
-// Componentes de las pestañas
-const LocalesRecomendados = () => (
-  <View style={styles.scene}>
-    <Text>Contenido de Locales Recomendados</Text>
-  </View>
-);
+import Recomendados from './LocalesRecomendados'
 
 // Configuración de las pestañas
 const Tab = createMaterialTopTabNavigator();
@@ -23,8 +17,8 @@ const TabLocales = () => {
         style: styles.tabBar,
       }}
     >
-      <Tab.Screen name="Locales Recomendados" component={LocalesRecomendados} />
-      <Tab.Screen name="Locales" component={Locales} />
+      <Tab.Screen name="Recomendados" component={Recomendados} />
+      <Tab.Screen name="Sitios" component={Sitios} />
       <Tab.Screen name="Siguiendo" component={Siguiendo} />
     </Tab.Navigator>
   );

@@ -55,27 +55,30 @@ const ModalDetalle = ({ local, usuarios, closeModal }) => {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={true}
       onRequestClose={closeModal}
     >
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={styles.modalContainer}>
-        <Text style={styles.localName}>{local.nombreSitio}</Text>
-          <Text style={styles.sectionTitle}>Detalles del local: {local.nombreSitio}</Text>
-          <Text style={styles.sectionTitle}>Detalles: {local.descripcionExtensa}</Text>
-          <Text style={styles.sectionTitle}>Direccion: {local.ubicacion}</Text>
-          <Text style={styles.sectionTitle}>Requiere Reserva: {local.requiereReserva.toString()}</Text>
-          <Text style={styles.sectionTitle}>Horario: {local.horario}</Text>
+        
+          <View style={styles.container}>
+          <Text style={styles.localName}>{local.nombreSitio}</Text>
+            <Text style={styles.sectionTitle}>{local.descripcionExtensa}</Text>
+            <Text style={styles.sectionTitle}>{local.ubicacion}</Text>
+            <Text style={styles.sectionTitle}>Requiere reserva: {local.requiereReserva ? 'Sí' : 'No'}</Text>
+            <Text style={styles.sectionTitle}>Horario: {local.horario}</Text>
+          </View>
           {/* ...otros detalles del local */}
+          <View style={styles.separator2} />
+          <Text style={styles.localName}>Reviews</Text>
           <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Reviews</Text>
           <ScrollView style={styles.scrollView}>
-            {usuarios.map((item, index) => (
+          {usuarios.map((item, index) => (
               <View key={index} style={styles.commentContainer}>
-                <Text>{item.usuario}</Text>
-                <View style={styles.ratingContainer}>
+                <View style={styles.userInfo}>
+                  <Text style={styles.highlightedUser}>{item.usuario}</Text>
                   <Rating
                     type="star"
                     startingValue={item.rating}
@@ -88,8 +91,8 @@ const ModalDetalle = ({ local, usuarios, closeModal }) => {
               </View>
             ))}
           </ScrollView>
-          <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Tu reseña</Text>
+          <View style={styles.separator2} />
+          <Text style={styles.localName}>Tu reseña</Text>
           <ScrollView style={styles.userReviewContainer}>
             <Rating
               type="star"
@@ -105,8 +108,10 @@ const ModalDetalle = ({ local, usuarios, closeModal }) => {
               style={styles.input}
             />
           </ScrollView>
-          <Button title="Guardar reseña" onPress={handleGuardarReview} />
-          <Button title="Cerrar" onPress={closeModal} />
+          <View style={styles.buttonsContainer3}>
+          <Button style={styles.button} title="Guardar reseña" onPress={handleGuardarReview} />
+          <Button style={styles.button} title="Cerrar" onPress={closeModal} />
+          </View>
         </View>
       </View>
     </Modal>
@@ -151,6 +156,45 @@ const styles = StyleSheet.create({
   separator: {
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    marginBottom: 5,
+  },
+  separator2: {
+    borderBottomWidth: 4,
+    borderBottomColor: '#ccc',
+    marginBottom: 5,
+  },
+  buttonsContainer3: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor:'white',
+    marginBottom:30
+    
+  },
+  button: {
+    flex:1,
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
+    marginRight:10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  highlightedUser: {
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  container: {
+    alignItems: 'center', // Alinea los elementos al centro horizontal
+    justifyContent: 'center', // Alinea los elementos al centro vertical
+  },
+  localName: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 5,
   },
 });

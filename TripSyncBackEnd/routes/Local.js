@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const LocalModel  = require('../models/Local');
-
+const moment = require('moment');
 
 router.get('/getLocales', async (req, res) => {
     try {
@@ -181,6 +181,63 @@ router.get('/getLocales', async (req, res) => {
         return res.status(200).json({ message: 'Rating del local actualizado exitosamente', updatedLocal });
       });
     });
+  });
+
+  router.delete('/eliminarSitio/:localId', (req, res) => {
+    const localId = req.params.localId;
+    // Ejemplo de eliminación en la base de datos (usando un modelo hipotético "Local")
+    LocalModel.findByIdAndRemove(localId, (err, deletedLocal) => {
+      if (err || !deletedLocal) {
+        return res.status(404).json({ message: 'No se pudo encontrar o eliminar el local' });
+      }
+  
+      return res.status(200).json({ message: 'Local eliminado exitosamente', deletedLocal });
+    });
+  });
+
+  router.get('/LocalesRecomendados/:usuarioLocal', async (req, res) => {
+    try {
+      const { usuarioLocal } = req.params;
+  
+      const localesRecomendados = await LocalModel.aggregate([
+        // Filtrar locales que el usuario no esté siguiendo
+        {
+          $match: {
+            $and: [
+              { 'usuarioLocal': { $ne: usuarioLocal } },
+              { 'usuarios.usuario': { $ne: usuarioLocal } } // Reemplaza req.user.username con la manera adecuada de obtener el usuario actual si estás usando algún sistema de autenticación
+            ]
+          }
+        },
+        // Agregar un campo con el tiempo de la próxima actividad más cercana
+        {
+          $addFields: {
+            proximaActividad: {
+              $min: {
+                $filter: {
+                  input: '$actividades',
+                  as: 'actividad',
+                  cond: { $gte: ['$$actividad.fecha', moment().format('YYYY-MM-DD')]}
+                }
+              }
+            }
+          }
+        },
+        // Filtrar locales con actividades futuras y calcular el tiempo hasta la próxima actividad
+        {
+          $match: { proximaActividad: { $exists: true } }
+        },
+        // Ordenar por el rating más alto
+        { $sort: { rating: -1 } },
+        // Obtener solo 5 registros
+        { $limit: 5 }
+      ]);
+  
+      res.json(localesRecomendados);
+    } catch (error) {
+      console.error('Error al obtener locales recomendados:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
   });
 
 module.exports = router;
