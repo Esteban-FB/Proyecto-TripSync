@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, ImageBackground, TouchableOpacity, Modal } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, ImageBackground, TouchableOpacity, Modal, Alert } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import axios from 'axios';
 import { useAuth } from '../utils/context/AuthContext'; // Ajusta la ruta según tu estructura de carpetas
@@ -39,7 +39,8 @@ const Login = ({ navigation }) => {
         }
       })
       .catch(error => {
-        console.error('Error en la solicitud POST:', error);
+        //console.error('Error en la solicitud POST:', error);
+        Alert.alert('Log In','Fallo en el inicio de sesión, las credenciales ingresadas no existen o fueron mal ingresadas.');
         // Manejar errores según tus necesidades
       });
 
@@ -51,11 +52,13 @@ const Login = ({ navigation }) => {
     const registrationDataJSON = JSON.stringify(registrationData);
     axios.post('http://10.0.2.2:5000/api/login/registrarse', { registrationData: registrationDataJSON })
       .then(response => {
-        console.log('Respuesta del servidor:', response.data);
+        //console.log('Respuesta del servidor:', response.data);
+        Alert.alert('Registro','El usuario se registro con exito.');
         // Manejar la respuesta del servidor según tus necesidades
       })
       .catch(error => {
-        console.error('Error en la solicitud POST:', error);
+        //console.error('Error en la solicitud POST:', error);
+        Alert.alert('Registro','Hubo un fallo en el registro del usuario.');
         // Manejar errores según tus necesidades
       });
     console.log(registrationData);
@@ -68,7 +71,8 @@ const Login = ({ navigation }) => {
 
   return (
     <ImageBackground source={require('../assets/background-image.jpg')} style={styles.container}>
-      <Text style={styles.title}>Bienvenido a TripSync</Text>
+      <Text style={styles.title}>Bienvenido a{'\n'}<Text style={styles.titleBold}>TripSync</Text></Text>
+
       <TextInput
         style={styles.input}
         placeholder="Nombre de Usuario"
@@ -96,7 +100,9 @@ const Login = ({ navigation }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={styles.modalContainer}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Text style={styles.modalTitle}>Registro</Text>
           <TextInput
             style={styles.modalInput}
@@ -127,9 +133,12 @@ const Login = ({ navigation }) => {
             ]}
             value={registrationData.rol}
           />
-          
-          <Button title="Registrarse" onPress={handleRegistration} />
-          <Button title="Cancelar" onPress={() => setModalVisible(false)} />
+          </View>
+          <View style={styles.buttonContainer}>
+          <Button style={styles.button} title="Registrarse" onPress={handleRegistration} />
+          <Button style={styles.button} title="Cancelar" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
         </View>
       </Modal>
     </ImageBackground>
@@ -138,6 +147,21 @@ const Login = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   // ... (otros estilos)
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor:'white',
+    marginBottom:30
+  },
+  button: {
+    flex:1,
+    backgroundColor: '#2196F3',
+    borderRadius: 20,
+    marginRight:10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -145,9 +169,13 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    fontSize: 24,
-    color: 'white',
-    marginBottom: 20,
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black', // Cambia el color que desees
+  },
+  titleBold: {
+    color: 'blue', // Cambia el color que desees
   },
   input: {
     width: '80%',
@@ -156,20 +184,27 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 5,
   },
-  button: {
-    backgroundColor: '#2196F3',
-    borderRadius: 5,
-    padding: 10,
-    elevation: 2,
-    marginBottom: 10,
-  },
+  // button: {
+  //   backgroundColor: '#2196F3',
+  //   borderRadius: 5,
+  //   padding: 10,
+  //   elevation: 2,
+  //   marginBottom: 10,
+  // },
   
   // Estilos para el modal
   modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor:'white',
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    width: '80%',
+    maxHeight: '50%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    elevation: 5,
   },
   modalTitle: {
     fontSize: 20,

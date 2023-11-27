@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, TextInput, Image, TouchableOpacity, Modal, Button, StyleSheet, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, FlatList, TextInput, Image, TouchableOpacity, Modal, Button, StyleSheet, ScrollView, ImageBackground,Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Rating } from 'react-native-ratings';
 import ModalDetalle from './ModalDetalle'; 
@@ -62,17 +62,35 @@ const LocalList = ({navigation}) => {
       });
   };
 
+  const confirmarDejarDeSeguir = (localId) => {
+    Alert.alert(
+      'Confirmación',
+      '¿Estás seguro de que quieres dejar de seguir este local?',
+      [
+        {
+          text: 'Sí',
+          onPress: () => dejarDeSeguirLocal(localId),
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
+  };
   const handleAgregarActividadEnOtroLugar = async (actividad, localNombre) => {
     const selectedDay = actividad.fecha; // Obtener la fecha de la actividad
-    const newEventText = localNombre; // Nombre del Local del item que contiene las actividades
+    const newEventText = nombreLocal; // Nombre del Local del item que contiene las actividades
     const newEventDetails = actividad.nombre; // Nombre de la actividad
-  
+    console.log("fecha: ",selectedDay," ","EventoN: ",newEventText," ","Detalle: ",newEventDetails, "usuario: ", user.user);
     try {
       // Enviar el evento al servidor usando Axios
       await axios.post('http://10.0.2.2:5000/api/agenda/agregar-evento', {
         date: selectedDay,
         text: newEventText,
         details: newEventDetails,
+        usuario:user.user,
       });
   
       // Manejar la respuesta del servidor si es necesario
@@ -148,8 +166,8 @@ const LocalList = ({navigation}) => {
           />
         </TouchableOpacity>
         <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => dejarDeSeguirLocal(item._id)}>
-          <Text style={styles.buttonText}>Siguiendo</Text>
+        <TouchableOpacity style={styles.button2} onPress={() => confirmarDejarDeSeguir(item._id)}>
+          <Text style={styles.buttonText}>Dejar de seguir</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -165,9 +183,10 @@ const LocalList = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => {
             setActividadSeleccionada(item.actividades); // Guarda las actividades del elemento seleccionado
+            console.log("item nombre sitio: ", item.nombreSitio);
             setNombreLocal(item.nombreSitio);
             setModalActividadesVisible(true);
-            console.log('modalActividadesVisible:', item.actividades); // Agrega esto para verificar si modalActividadesVisible cambia a true
+            console.log('modalActividadesVisible:', item.nombreSitio); // Agrega esto para verificar si modalActividadesVisible cambia a true
             }}
             >
             <Text style={styles.buttonText}>Actividades</Text>
@@ -417,10 +436,21 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '30%',
     alignItems: 'center',
+    justifyContent:'center'
+  },
+  button2: {
+    flex:1,
+    backgroundColor: 'darkred',
+    borderRadius: 5,
+    marginRight:10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
   },
   buttonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+    justifyContent:'center'
   },
   separator: {
     borderBottomWidth: 1,

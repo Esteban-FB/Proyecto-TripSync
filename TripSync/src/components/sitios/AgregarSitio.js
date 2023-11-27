@@ -47,15 +47,43 @@ const AgregarSitio = ({navigation}) => {
   };
 
   const handleEliminarClick = (localId) => {
-    axios.delete(`http://10.0.2.2:5000/api/locales/eliminarSitio/${localId}`)
-      .then((response) => {
-        // Lógica después de eliminar con éxito del servidor
-        Alert.alert('Eliminado','Local eliminado correctamente');
-      })
-      .catch((error) => {
-        // Manejo de errores
-        Alert.alert('Eliminado','Error al eliminar el local de la base de datos:', error);
-      });
+    // axios.delete(`http://10.0.2.2:5000/api/locales/eliminarSitio/${localId}`)
+    //   .then((response) => {
+    //     // Lógica después de eliminar con éxito del servidor
+    //     Alert.alert('Eliminado','Local eliminado correctamente');
+    //   })
+    //   .catch((error) => {
+    //     // Manejo de errores
+    //     Alert.alert('Eliminado','Error al eliminar el local de la base de datos:', error);
+    //   });
+    
+      Alert.alert(
+        'Confirmación',
+        '¿Estás seguro de que quieres eliminar este local?',
+        [
+          {
+            text: 'Sí',
+            onPress: () => {
+              axios
+                .delete(`http://10.0.2.2:5000/api/locales/eliminarSitio/${localId}`)
+                .then((response) => {
+                  // Lógica después de eliminar con éxito del servidor
+                  Alert.alert('Eliminado', 'Local eliminado correctamente');
+                  // Aquí podrías realizar alguna acción adicional si lo deseas
+                })
+                .catch((error) => {
+                  // Manejo de errores
+                  Alert.alert('Error', 'Error al eliminar el local de la base de datos:', error);
+                });
+            },
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false }
+      );
   };
 
   const handleEditarClick = (local) => {
@@ -76,10 +104,13 @@ const AgregarSitio = ({navigation}) => {
       source={require('../../assets/gruposA.png')} // Ruta de la imagen en tus assets
       style={styles.background}
     >
+      <View>
       {locales.length === 0 ? (
+        <View style={style={height:'100%', alignItems:'center',justifyContent:'center'}}>
         <Text style={{ fontSize: 20, marginBottom: 20 }}>
           No tienes ningún sitio registrado
         </Text>
+        </View>
       ) : (
         <FlatList
           data={locales}
@@ -145,6 +176,7 @@ const AgregarSitio = ({navigation}) => {
         modoEdicion={modoEdicion}
         sitioAEditar={localSeleccionado}
       />
+      </View>
       </ImageBackground>
     
   );

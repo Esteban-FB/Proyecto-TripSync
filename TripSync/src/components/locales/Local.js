@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, TextInput, Image, TouchableOpacity, Modal, Button, StyleSheet, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, FlatList, TextInput, Image, TouchableOpacity, Modal, Button, StyleSheet, ScrollView, ImageBackground,Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Rating } from 'react-native-ratings';
 import ModalDetalle from './ModalDetalle'; 
@@ -54,7 +54,7 @@ const LocalList = ({navigation}) => {
       );
 
   const seguirLocal = (localId) => {
-    // Encontrar el local por su _id y guardarlo en una variable
+    // // Encontrar el local por su _id y guardarlo en una variable
     const localSeguido = locales.find(local => local._id === localId);
 
     // Crear el objeto con los datos del usuario y el nuevo seguimiento
@@ -64,22 +64,48 @@ const LocalList = ({navigation}) => {
       usuario: user.user, // Usar la información del usuario actual obtenida del contexto
     };
 
-    // Enviar la información del seguimiento al backend para agregarla al array de usuarios del local
-    axios.post(`http://10.0.2.2:5000/api/locales/seguirLocal/${localId}`, seguimiento)
-    .then(response => {
-      // Si la operación fue exitosa, filtramos los locales para obtener todos menos el que se está siguiendo
-      const nuevosLocales = locales.filter(local => local._id !== localId);
-      setLocales(nuevosLocales); // Actualizar la lista de locales en el estado
-    })
-    .catch(error => {
-      console.error('Error al seguir el local', error);
-    });
+    // // Enviar la información del seguimiento al backend para agregarla al array de usuarios del local
+    // axios.post(`http://10.0.2.2:5000/api/locales/seguirLocal/${localId}`, seguimiento)
+    // .then(response => {
+    //   // Si la operación fue exitosa, filtramos los locales para obtener todos menos el que se está siguiendo
+    //   const nuevosLocales = locales.filter(local => local._id !== localId);
+    //   setLocales(nuevosLocales); // Actualizar la lista de locales en el estado
+    // })
+    // .catch(error => {
+    //   console.error('Error al seguir el local', error);
+    // });
+    Alert.alert(
+      'Confirmación',
+      '¿Estás seguro de que quieres seguir este local?',
+      [
+        {
+          text: 'Sí',
+          onPress: () => {
+            axios
+              .post(`http://10.0.2.2:5000/api/locales/seguirLocal/${localId}`, seguimiento)
+              .then((response) => {
+                // Si la operación fue exitosa, filtramos los locales para obtener todos menos el que se está siguiendo
+                const nuevosLocales = locales.filter((local) => local._id !== localId);
+                setLocales(nuevosLocales); // Actualizar la lista de locales en el estado
+              })
+              .catch((error) => {
+                console.error('Error al seguir el local', error);
+              });
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
 
   const handleAgregarActividadEnOtroLugar = async (actividad, localNombre) => {
     const selectedDay = actividad.fecha; // Obtener la fecha de la actividad
-    const newEventText = localNombre; // Nombre del Local del item que contiene las actividades
+    const newEventText = nombreLocal; // Nombre del Local del item que contiene las actividades
     const newEventDetails = actividad.nombre; // Nombre de la actividad
     console.log("fecha: ",selectedDay," ","EventoN: ",newEventText," ","Detalle: ",newEventDetails);
     try {
@@ -163,7 +189,7 @@ const LocalList = ({navigation}) => {
           />
         </TouchableOpacity>
         <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => seguirLocal(item._id)}>
+        <TouchableOpacity style={styles.button2} onPress={() => seguirLocal(item._id)}>
           <Text style={styles.buttonText}>Seguir</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -453,6 +479,15 @@ const styles = StyleSheet.create({
   button: {
     flex:1,
     backgroundColor: '#2196F3',
+    borderRadius: 5,
+    marginRight:10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
+  button2: {
+    flex:1,
+    backgroundColor: 'darkgreen',
     borderRadius: 5,
     marginRight:10,
     padding: 10,
