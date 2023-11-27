@@ -293,15 +293,21 @@ function Party() {
       {/* Modal para invitar usuario */}
       <Modal visible={inviteModalVisible} transparent={true} animationType="slide">
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View style={styles.inviteModalContainer}>
+      <View style={styles.editModalContainer}>
+
+      <View style={styles.inputContainer}>
+          <Text style={styles.label}>Invitar usuario</Text>
           <TextInput
+          style={styles.input}
             placeholder="Invitar usuario"
             value={inviteInput}
             onChangeText={(text) => setInviteInput(text)}
           />
+          </View>
           <View style={styles.buttonContainer2}>
           <Button style={styles.button} title="Invitar" onPress={handleInviteUser} />
           <Button style={styles.button} title="Cancelar" onPress={closeInviteModal} />
+          
           </View>
         </View>
         </View>
@@ -309,26 +315,35 @@ function Party() {
       {/* Modal para crear o editar fiesta */}
       <Modal visible={modalVisible} transparent={true} animationType="slide">
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        
       <View style={styles.editModalContainer}>
+      <View style={styles.inputContainer}>
+          <Text style={styles.label}>Nombre del grupo</Text>
           <TextInput
+          style={styles.input}
             placeholder="Nombre"
             value={nombre}
             onChangeText={(text) => setNombre(text)}
           />
+          </View>
+          <View style={styles.inputContainer}>
+          <Text style={styles.label}>Descripcion del grupo</Text>
           <TextInput
+          style={styles.input}
             placeholder="Descripción"
             value={descripcion}
             onChangeText={(text) => setDescripcion(text)}
           />
+          </View>
           {/* Mostrar usuarios invitados si existen */}
-          {usuariosInvitados && usuariosInvitados.length > 0 && (
+          {/* {usuariosInvitados && usuariosInvitados.length > 0 && (
             <View>
               <Text>Usuarios invitados:</Text>
               {usuariosInvitados.map((usuario, index) => (
                 <Text alignItems='center' key={index}>{usuario}</Text>
               ))}
             </View>
-            )}
+            )} */}
           <View style={styles.buttonContainer2}>
             <Button style={styles.button} title="Guardar grupo" onPress={manejarGuardarParty} />
             <Button style={styles.button} title="Cancelar" onPress={() => {
@@ -342,6 +357,7 @@ function Party() {
 
       {showActivitiesModal && (
         <Modal visible={showActivitiesModal} transparent={true} animationType="slide">
+
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <View style={styles.editModalContainer}>
               <Text style={styles.modalHeaderText}>Actividades para este grupo</Text>
@@ -388,6 +404,13 @@ function Party() {
   );
 }
 const styles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    width:200
+  },
   background: {
     flex: 1,
     resizeMode: 'cover',
@@ -464,14 +487,14 @@ const styles = StyleSheet.create({
     },
     buttonContainer2: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginTop: 20,
+    justifyContent: 'space-around',
+    width: '100%',
     },
     button: {
       paddingHorizontal: 20,
       paddingVertical: 10,
       borderWidth: 1,
-      borderRadius: 5,
+      borderRadius: 20,
       borderColor: '#ccc',
     },
     activitiesModalContainer: {
@@ -530,6 +553,15 @@ const styles = StyleSheet.create({
     },
     scrollView: {
       maxHeight: '10%',
+    },
+    inputContainer: {
+    
+      marginBottom: 20,
+    },
+    label: {
+      fontSize: 16,
+      marginBottom: 5,
+      fontWeight: 'bold',
     },
 });
 export default Party;

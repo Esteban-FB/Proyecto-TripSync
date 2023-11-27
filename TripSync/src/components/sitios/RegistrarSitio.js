@@ -1,6 +1,6 @@
 //import * as React from 'react';
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Switch, Button, Image, ScrollView, Modal, Pressable,StyleSheet } from 'react-native';
+import { View, Text, TextInput, Switch, Button, Image, ScrollView, Modal, Pressable,StyleSheet,AccessibilityActionEvent,Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from '../../utils/context/AuthContext'; // Ajusta la ruta según tu estructura de carpetas
@@ -114,10 +114,12 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
     console.log("Sitio: ",sitio);
     try {
       const response = await axios.post('http://10.0.2.2:5000/api/locales/registrarLocales', sitio);
-      console.log("Respuesta del servidor:", response.data);
+      // console.log("Respuesta del servidor:", response.data);
+      Alert.alert('Sitios','Su nuevo puesto turistico ha sido registrado con exito.');
       onClose();
     } catch (error) {
-      console.error('Error al enviar datos al servidor:', error);
+      // console.error('Error al enviar datos al servidor:', error);
+      Alert.alert('Sitios','Hubo un error al guardar el nuevo puesto turistico.');
       // Manejo de errores
     }
     setNombreSitio('');
@@ -158,6 +160,7 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nombre del sitio:</Text>
         <TextInput
+          
           style={styles.input}
           placeholder="Ejemplo: Hotel Paradise"
           value={nombreSitio}
@@ -167,6 +170,7 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Tipo de sitio:</Text>
         <Picker
+        
           style={styles.picker}
           selectedValue={tipoSitio}
           onValueChange={itemValue => setTipoSitio(itemValue)}

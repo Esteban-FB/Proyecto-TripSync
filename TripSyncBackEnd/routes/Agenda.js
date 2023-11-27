@@ -6,7 +6,7 @@ const Agenda = require('../models/Agenda');
 router.post('/agregar-evento', async (req, res) => {
     try {
         const { date, text, details, usuario } = req.body;
-        console.log("date:", date);
+        console.log("date:", req.body);
 
         // Buscar si existe un día con la fecha proporcionada
         let dia = await Agenda.findOne({
@@ -18,6 +18,7 @@ router.post('/agregar-evento', async (req, res) => {
         console.log("Dia encontrado",dia);
         if (!dia) {
             // Si el día no existe, crear una nueva instancia del modelo Agenda con el usuario
+            console.log("Entro a crear", usuario);
             dia = new Agenda({ dias: [{ date, events: [{ text, details }]}], usuario  });
         } else {
             // Si el día existe, encontrar su índice en el array
@@ -25,12 +26,13 @@ router.post('/agregar-evento', async (req, res) => {
 
             // Verificar si el día existe y el usuario es el mismo que realiza la solicitud
             if (index !== -1 && dia.usuario === usuario) {
-                console.log("Entro a editar", dia.usuario);
+                console.log("Entro a editar", usuario);
                 // Si el usuario coincide, actualizar los eventos en el día existente
                 dia.dias[index].events.push({ text, details });
             } else {
                 // Si el día existe pero el usuario no coincide, crear un nuevo día para el nuevo usuario
                 // dia.dias.push({ date, events: [{ text, details }], usuario });
+                console.log("Entro a crear", usuario);
                 dia = new Agenda({ dias: [{ date, events: [{ text, details }]}], usuario  });
             }
         }
