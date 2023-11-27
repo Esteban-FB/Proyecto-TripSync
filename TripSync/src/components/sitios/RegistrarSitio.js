@@ -115,11 +115,11 @@ const RegistrarSitio = ({visible, onClose, modoEdicion = false, sitioAEditar }) 
     try {
       const response = await axios.post('http://10.0.2.2:5000/api/locales/registrarLocales', sitio);
       // console.log("Respuesta del servidor:", response.data);
-      Alert.alert('Sitios','Su nuevo puesto turistico ha sido registrado con exito.');
+      Alert.alert('Sitios','Se registro o actualizo con exito el sitio.');
       onClose();
     } catch (error) {
       // console.error('Error al enviar datos al servidor:', error);
-      Alert.alert('Sitios','Hubo un error al guardar el nuevo puesto turistico.');
+      Alert.alert('Sitios','Hubo un error al guardar o actualizar el nuevo sitio.');
       // Manejo de errores
     }
     setNombreSitio('');

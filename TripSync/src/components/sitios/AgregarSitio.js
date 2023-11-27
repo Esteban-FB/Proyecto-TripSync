@@ -101,7 +101,7 @@ const AgregarSitio = ({navigation}) => {
     
     
     <ImageBackground
-      source={require('../../assets/gruposA.png')} // Ruta de la imagen en tus assets
+      source={require('../../assets/Sitios2.png')} // Ruta de la imagen en tus assets
       style={styles.background}
     >
       <View>
@@ -120,18 +120,18 @@ const AgregarSitio = ({navigation}) => {
               <View style={styles.itemContainer2}>
               <Swiper style={styles.swiper} showsButtons={true}>
                 <View style={styles.slide}>
-                  <Image source={require('../../assets/gruposA.png')} style={styles.image} />
+                  <Image source={require('../../assets/misitio.jpg')} style={styles.image} />
                 </View>
                 <View style={styles.slide}>
                   <Image
                     style={styles.image}
-                    source={ require('../../assets/Sitios.png' )}
+                    source={ require('../../assets/misitio2.jpg' )}
                   />
                 </View>
                 <View style={styles.slide}>
                   <Image
                     style={styles.image}
-                    source={ require('../../assets/grupos.jpg' )}
+                    source={ require('../../assets/misitio3.jpg' )}
                     resizeMode="cover"
                   />
                 </View>

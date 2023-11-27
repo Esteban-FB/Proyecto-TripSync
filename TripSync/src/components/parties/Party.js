@@ -263,7 +263,7 @@ function Party() {
 
   return (
     <ImageBackground
-      source={require('../../assets/gruposA.png')} // Ruta de la imagen en tus assets
+      source={require('../../assets/grupos.jpg')} // Ruta de la imagen en tus assets
       style={styles.background}
     >
     <ScrollView style={styles.container}>

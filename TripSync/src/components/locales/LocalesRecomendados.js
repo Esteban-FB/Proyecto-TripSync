@@ -122,9 +122,10 @@ useFocusEffect(
       });
   
       // Manejar la respuesta del servidor si es necesario
-  
+      Alert.alert('Evento', 'El evento se ha agregado a la agenda.')
     } catch (error) {
-      console.error('Error al enviar el evento al servidor:', error.message);
+      //console.error('Error al enviar el evento al servidor:', error.message);
+      Alert.alert('Evento', 'Hubo un problema al agregar el evento.')
       // Puedes manejar el error según tus necesidades
     }
   };
@@ -165,19 +166,19 @@ useFocusEffect(
     <View style={styles.localContainer}>
       <Swiper style={styles.wrapper} showsButtons={true}>
         <View style={styles.slide}>
-          <Image source={require('../../assets/gruposA.png')} style={styles.image} />
+          <Image source={require('../../assets/palmera.jpeg')} style={styles.image} />
         </View>
         <View style={styles.slide}>
         <Image
           style={styles.image}
-          source={ require('../../assets/Sitios.png' )}
+          source={ require('../../assets/playa.jpg' )}
           resizeMode="cover"
         />
       </View>
       <View style={styles.slide}>
         <Image
           style={styles.image}
-          source={ require('../../assets/grupos.jpg' )}
+          source={ require('../../assets/playa2.0.jpg' )}
           resizeMode="cover"
         />
       </View>
@@ -231,7 +232,7 @@ useFocusEffect(
       {localesRecomendados && localesRecomendados.length === 0 ? (
     // Si localesRecomendados está vacío, muestra un mensaje o componente alternativo
     <ImageBackground
-      source={require('../../assets/gruposA.png')} // Ruta de la imagen en tus assets
+      source={require('../../assets/booking.jpg')} // Ruta de la imagen en tus assets
       style={styles.background}
     >
       <View style={style={height:'100%', alignItems:'center',justifyContent:'center'}}>
@@ -243,7 +244,7 @@ useFocusEffect(
   ) : (
     // Si localesRecomendados tiene elementos, renderiza el contenido con ImageBackground
     <ImageBackground
-      source={require('../../assets/gruposA.png')} // Ruta de la imagen en tus assets
+      source={require('../../assets/booking.jpg')} // Ruta de la imagen en tus assets
       style={styles.background}
     >
       <FlatList

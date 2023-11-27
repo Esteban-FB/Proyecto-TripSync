@@ -40,6 +40,6 @@ const firebaseConfig = {
 
 const firestore = initializeApp(firebaseConfig);
 
-const analytics = getAnalytics(firestore);
+//const analytics = getAnalytics(firestore);
 
 export default firestore;
